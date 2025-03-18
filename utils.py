@@ -70,12 +70,12 @@ def decode_output(prediction, n_bins, dims_avg, obj_type):
     delta_angle = np.arctan2(sin_deltas[selected_bin], cos_deltas[selected_bin])
 
     # 5) Total orientation
-    alpha = bin_centers[selected_bin] + delta_angle
+    theta_l = bin_centers[selected_bin] + delta_angle
     
     # 6) Object dimensions
     dimensions = dims_avg[obj_type] + dims_residual
     
-    return alpha, dimensions
+    return theta_l, dimensions
 
 def get_P2(id):
     """Read camera calibration file and extract P2 matrix based on image id."""

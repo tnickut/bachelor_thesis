@@ -84,12 +84,11 @@ def process3D(img, p2, bbox2d, poolingLayer=None, poolingMinWidth=0):
         prediction = model.predict(tensor)
 
         center_x = int((xmin + xmax) / 2)
-        center_y = int((ymin + ymax) / 2)
 
-        alpha, dimensions = decode_output(prediction, n_bins, DIMS_AVG, yolo_class_names_matched[int(yolo_class)])
-        theta_ray = compute_theta_ray(center_x, center_y, p2)
-        rotation_y = alpha + theta_ray
-        return rotation_y, theta_ray, alpha, dimensions
+        theta_l, dimensions = decode_output(prediction, n_bins, DIMS_AVG, yolo_class_names_matched[int(yolo_class)])
+        theta_ray = compute_theta_ray(center_x, None, p2)
+        theta_glob = theta_l + theta_ray
+        return theta_glob, theta_ray, theta_l, dimensions
 
 
 def get_yolo_classes_matched():

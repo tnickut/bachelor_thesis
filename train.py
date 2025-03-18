@@ -75,10 +75,10 @@ class MultiBinLoss(tf.keras.losses.Loss):
         n_bins = tf.shape(self.bin_centers)[0]
         # Confidence branch predictions:
         conf_logits = y_pred[:, :n_bins]
-        theta = y_true[:, 0]
+        theta_l = y_true[:, 0]
 
         # Compute angular difference and wrap to [-pi, pi]
-        diff = theta[:, None] - self.bin_centers  # shape: (batch_size, n_bins)
+        diff = theta_l[:, None] - self.bin_centers  # shape: (batch_size, n_bins)
         diff = tf.math.floormod(diff + np.pi, 2 * np.pi) - np.pi
 
         # Create soft labels: mark bins as active if within the extended threshold.
@@ -95,25 +95,25 @@ class MultiBinLoss(tf.keras.losses.Loss):
 
     def localization_loss(self, y_true, y_pred):
         """Computes the localization loss for orientation regression within the bin:
-        L_loc = - (1/n_theta*) * sum_i[ cos(theta* - c_i - Delta_theta_i) ]
+        L_loc = - (1/n_theta*) * sum_i[ cos(theta_l* - c_i - Delta_theta_l_i) ]
         """
 
         n_bins = tf.shape(self.bin_centers)[0]
         # Localization branch predictions: predicted cosine and sine for the residual angle.
         cos_deltas = y_pred[:, n_bins:2*n_bins]
         sin_deltas = y_pred[:, 2*n_bins:3*n_bins]
-        theta = y_true[:, 0]
+        theta_l = y_true[:, 0]
 
         # Compute angular differences between the ground truth angle and all bin centers,
         # wrapping the result to [-pi, pi].
-        diff = theta[:, None] - self.bin_centers
+        diff = theta_l[:, None] - self.bin_centers
         diff = tf.math.floormod(diff + np.pi, 2 * np.pi) - np.pi
 
         # Compute the predicted residual angle for each bin.
-        delta_theta = tf.atan2(sin_deltas, cos_deltas)
+        delta_theta_l = tf.atan2(sin_deltas, cos_deltas)
 
         # Compute the cosine of the difference between the ground truth angle and the predicted angle (bin center + residual).
-        cos_diff = tf.cos(theta[:, None] - self.bin_centers - delta_theta)
+        cos_diff = tf.cos(theta_l[:, None] - self.bin_centers - delta_theta_l)
         
         # Update the mask to consider bins within half the bin width plus the overlap.
         in_bin_mask = tf.abs(diff) < ((self.bin_width / 2) + self.overlap) # shape: (batch_size, n_bins), e.g. [0, 0, 1, 0, 0, 0]
@@ -223,16 +223,17 @@ def data_generator(image_dir, label_dir, batch_size=8):
             P2 = get_P2(os.path.splitext(img_file)[0])
             X_batch, y_batch = [], []
             for obj in objects:
+                if obj['type'] == 'DontCare' or obj['type'] == 'Misc':
+                    continue
                 # Crop and resize image
                 img_crop = preprocess_image(img_path, obj['box'])
                 X_batch.append(img_crop)
-                # Compute theta and dimensions residual
+                # Compute theta_l and dimensions residual
                 center_x = (obj['box'][0] + obj['box'][2]) / 2
-                center_y = (obj['box'][1] + obj['box'][3]) / 2
-                theta_ray = compute_theta_ray(center_x, center_y, P2)
-                theta = obj['rot_y'] - theta_ray
+                theta_ray = compute_theta_ray(center_x, None, P2)
+                theta_l = obj['rot_y'] - theta_ray
                 dims_residual = np.array(obj['dims']) - DIMS_AVG[obj['type']]
-                y_batch.append(np.concatenate([[theta], dims_residual]))
+                y_batch.append(np.concatenate([[theta_l], dims_residual]))
             yield np.array(X_batch), np.array(y_batch)
 
 
