@@ -11,12 +11,12 @@ Prerequisites:
 
 Sciebo link for big files: https://uni-muenster.sciebo.de/s/6YxYy9WgCzRjrsQ
 
-The repo offers the following functionalities
+The repo offers the following functionalities:
 
 - **Training of the model:**
   - The training can be started by `python train.py`.
   - The images and labels from `train_images` and `train_labels` are used.
-  - In the folder, only a subset is currently available; the complete dataset can be downloaded from sciebo.
+  - In the folder, only a subset is available; the complete dataset can be downloaded from sciebo.
   - Training on the whole training subset takes about 23 hours.
   - The resulting model is saved as `orientation_model.h5` (also downloadable from sciebo).
 
@@ -43,7 +43,7 @@ The repo offers the following functionalities
 
 - **Starting and testing the Side Assist system:**
   1. Start the Side Assist by running `python side_assist.py` and wait for the server to boot up.
-  2. Set the video path in the file `side_assist_feeder.py` to an example video in `traffic_videos_gta5`. Also, set the recording position to either left or right.
+  2. Set the video path in the file `side_assist_feeder.py` to an example video in `traffic_videos_gta5`. Exemplary videos can be downloaded from sciebo. Also, set the recording position to either left or right.
   3. Start `python side_assist_feeder.py` in another terminal.
-  4. The system will display a warning (if any) via port 8080, with the status shown in the console after each recorded frame. A warning for a particular side is indicated by `occupied_left` or `occupied_right` being marked as true.
+  4. The system will display a warning (if any) via port 8082, with the status shown in the console after each recorded frame. A warning for a particular side is indicated by `occupied_left` or `occupied_right` being marked as true.
 
