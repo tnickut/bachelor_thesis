@@ -7,13 +7,13 @@ from ultralytics import YOLO
 from utils import compute_theta_ray, preprocess_image, parse_label, decode_output, get_P2
 
 # Load 2D model
-yolo_classes = ['Person', 'Bicycle', 'Car', 'Motorcycle', 'Bus', 'Truck']
+yolo_classes = ['Person', 'Bicycle', 'Car', 'Motorcycle', 'Bus', 'Train', 'Truck']
 bbox2d_model = YOLO('yolov8n.pt')  # load yolov8 smallest model (n) for object detection
 bbox2d_model.overrides['conf'] = 0.9  # NMS confidence threshold
 bbox2d_model.overrides['iou'] = 0.45  # NMS IoU threshold
 bbox2d_model.overrides['agnostic_nms'] = False  # NMS class-agnostic
 bbox2d_model.overrides['max_det'] = 1000  # maximum number of detections per image
-bbox2d_model.overrides['classes'] = 0,1,2,3,5,7 ## define classes (these are the indexes of the classes of the variable yolo_classes)
+bbox2d_model.overrides['classes'] = 0,1,2,3,5,6,7 ## define classes (these are the indexes of the classes of the variable yolo_classes)
 
 # Load 3D model
 DIMS_AVG = {
@@ -26,7 +26,7 @@ DIMS_AVG = {
     'Tram': np.array([3.56020305,  2.40172589, 18.60659898])
 }
 yolo_class_names_matched = [
-    cls.replace('Person', 'Pedestrian').replace('Bicycle', 'Cyclist').replace('Motorcycle', 'Cyclist')
+    cls.replace('Person', 'Pedestrian').replace('Bicycle', 'Cyclist').replace('Motorcycle', 'Cyclist').replace('Bus', 'Van').replace('Train', 'Tram')
     for cls in yolo_classes
 ]
 n_bins = 6
