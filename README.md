@@ -1,6 +1,6 @@
 This repository contains the implementation for the software part of the bachelor thesis "Development and Integration of a Side-Assist System for OpenPilot Using Monocular Vision"
 
-Create the prerequisites:
+Prerequisites:
 
 1. Option manual installation
     1.1 Install Python (version 3.7.12, website: 'https://www.python.org/downloads/release/python-3712/')
