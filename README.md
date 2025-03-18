@@ -3,8 +3,8 @@ This repository contains the implementation for the software part of the bachelo
 Prerequisites:
 
 1. Option manual installation
-    1.1 Install Python (version 3.7.12, website: 'https://www.python.org/downloads/release/python-3712/')
-    1.2 Install dependencies via ‘pip install -r requirements.txt’
+   1. Install Python (version 3.7.12, website: [Python 3.7.12](https://www.python.org/downloads/release/python-3712/))
+   2. Install dependencies via `pip install -r requirements.txt`
 
 2. Option: Use Anaconda. Execute the following command:
     ‘conda create --name myenv python=3.7.12 --file requirements.txt’
